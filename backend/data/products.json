@@ -28,5 +28,175 @@
     "active": true,
     "createdAt": "2024-01-15T10:00:00.000Z",
     "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "4",
+    "name": "Smart TV LG 55\" 4K",
+    "description": "Smart TV LG UHD 4K de 55 polegadas com ThinQ AI e HDR10",
+    "price": 2799.99,
+    "stock": 12,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "5",
+    "name": "Tablet iPad 9ª Geração",
+    "description": "Apple iPad 9ª geração com tela Retina de 10.2 polegadas e 64GB",
+    "price": 2499.99,
+    "stock": 10,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "6",
+    "name": "Console PlayStation 5",
+    "description": "Sony PlayStation 5 com SSD de 825GB e suporte a jogos em 4K",
+    "price": 4599.99,
+    "stock": 6,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "7",
+    "name": "Cafeteira Expresso Nespresso",
+    "description": "Cafeteira expresso Nespresso Essenza Mini com cápsulas inclusas",
+    "price": 499.99,
+    "stock": 20,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "8",
+    "name": "Relógio Smartwatch Amazfit",
+    "description": "Smartwatch Amazfit Bip U com monitoramento de saúde e bateria de 9 dias",
+    "price": 399.99,
+    "stock": 18,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "9",
+    "name": "Câmera GoPro Hero 11",
+    "description": "Câmera de ação GoPro Hero 11 com estabilização avançada e 5.3K",
+    "price": 2299.99,
+    "stock": 7,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "10",
+    "name": "Caixa de Som JBL Flip 6",
+    "description": "Caixa de som Bluetooth JBL Flip 6 à prova d’água com 12h de bateria",
+    "price": 599.99,
+    "stock": 22,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "11",
+    "name": "Monitor Gamer AOC 27\"",
+    "description": "Monitor gamer AOC 27 polegadas Full HD, 144Hz e 1ms de resposta",
+    "price": 1299.99,
+    "stock": 14,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "12",
+    "name": "Teclado Mecânico Redragon",
+    "description": "Teclado mecânico gamer Redragon Kumara com switches blue",
+    "price": 249.99,
+    "stock": 30,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "13",
+    "name": "Mouse Gamer Logitech G502",
+    "description": "Mouse gamer Logitech G502 com sensor HERO 25K e 11 botões programáveis",
+    "price": 349.99,
+    "stock": 28,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "14",
+    "name": "Impressora Multifuncional HP",
+    "description": "Impressora multifuncional HP DeskJet com Wi-Fi e impressão frente e verso",
+    "price": 699.99,
+    "stock": 11,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "15",
+    "name": "Air Fryer Philips Walita",
+    "description": "Fritadeira sem óleo Philips Walita de 4.1L com tecnologia Rapid Air",
+    "price": 799.99,
+    "stock": 16,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "16",
+    "name": "Geladeira Brastemp Frost Free",
+    "description": "Geladeira Brastemp Frost Free duplex de 375L com controle eletrônico",
+    "price": 3599.99,
+    "stock": 5,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "17",
+    "name": "Máquina de Lavar Samsung 11kg",
+    "description": "Máquina de lavar Samsung com Ecobubble e lavagem rápida de 15 minutos",
+    "price": 2799.99,
+    "stock": 9,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "18",
+    "name": "Aspirador de Pó Robô Roomba",
+    "description": "Aspirador de pó robô Roomba com mapeamento inteligente e recarga automática",
+    "price": 1899.99,
+    "stock": 13,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "19",
+    "name": "Micro-ondas Electrolux 20L",
+    "description": "Micro-ondas Electrolux 20 litros com painel digital e função descongelar",
+    "price": 599.99,
+    "stock": 17,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "20",
+    "name": "Ventilador de Coluna Arno",
+    "description": "Ventilador de coluna Arno Turbo Silence com 6 pás e 3 velocidades",
+    "price": 299.99,
+    "stock": 21,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
   }
 ]
