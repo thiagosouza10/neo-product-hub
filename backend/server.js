@@ -3,6 +3,17 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { 
+  getAllUsers, 
+  getUserById, 
+  getUserByUsername,
+  authenticateUser, 
+  createUser, 
+  updateUser, 
+  deleteUser, 
+  changePassword, 
+  toggleUserStatus 
+} from './services/UserService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -285,6 +296,185 @@ const swaggerDocument = {
   }
 };
 
+// ========================================
+// ROTAS DE USUÁRIOS
+// ========================================
+
+// Rota para autenticação (login)
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    
+    if (!username || !password) {
+      return res.status(400).json({ 
+        error: 'Username e password são obrigatórios' 
+      });
+    }
+    
+    const user = authenticateUser(username, password);
+    
+    if (user) {
+      res.json({
+        success: true,
+        message: 'Login realizado com sucesso',
+        user
+      });
+    } else {
+      res.status(401).json({ 
+        error: 'Credenciais inválidas' 
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'Erro interno do servidor' 
+    });
+  }
+});
+
+// Rota para obter todos os usuários
+app.get('/api/users', (req, res) => {
+  try {
+    const users = getAllUsers();
+    // Remover senhas dos usuários retornados
+    const usersWithoutPasswords = users.map(user => {
+      const { password, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    });
+    res.json(usersWithoutPasswords);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao obter usuários' });
+  }
+});
+
+// Rota para obter usuário por ID
+app.get('/api/users/:id', (req, res) => {
+  try {
+    const user = getUserById(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+    
+    // Remover senha do usuário retornado
+    const { password, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar usuário' });
+  }
+});
+
+// Rota para criar novo usuário
+app.post('/api/users', (req, res) => {
+  try {
+    const { name, username, password, role, active } = req.body;
+    
+    if (!name || !username || !password || !role) {
+      return res.status(400).json({ 
+        error: 'Todos os campos são obrigatórios' 
+      });
+    }
+    
+    const newUser = createUser({
+      name,
+      username,
+      password,
+      role,
+      active: active !== undefined ? active : true
+    });
+    
+    res.status(201).json(newUser);
+  } catch (error) {
+    if (error.message === 'Username já existe') {
+      res.status(409).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Erro ao criar usuário' });
+    }
+  }
+});
+
+// Rota para atualizar usuário
+app.put('/api/users/:id', (req, res) => {
+  try {
+    const { name, username, password, role, active } = req.body;
+    
+    const updateData = {};
+    if (name !== undefined) updateData.name = name;
+    if (username !== undefined) updateData.username = username;
+    if (password !== undefined) updateData.password = password;
+    if (role !== undefined) updateData.role = role;
+    if (active !== undefined) updateData.active = active;
+    
+    const updatedUser = updateUser(req.params.id, updateData);
+    res.json(updatedUser);
+  } catch (error) {
+    if (error.message === 'Usuário não encontrado') {
+      res.status(404).json({ error: error.message });
+    } else if (error.message === 'Username já existe') {
+      res.status(409).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Erro ao atualizar usuário' });
+    }
+  }
+});
+
+// Rota para deletar usuário
+app.delete('/api/users/:id', (req, res) => {
+  try {
+    deleteUser(req.params.id);
+    res.status(204).send();
+  } catch (error) {
+    if (error.message === 'Usuário não encontrado') {
+      res.status(404).json({ error: error.message });
+    } else if (error.message === 'Não é possível deletar o usuário admin') {
+      res.status(403).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Erro ao deletar usuário' });
+    }
+  }
+});
+
+// Rota para alterar senha
+app.put('/api/users/:username/password', (req, res) => {
+  try {
+    const { newPassword } = req.body;
+    
+    if (!newPassword) {
+      return res.status(400).json({ 
+        error: 'Nova senha é obrigatória' 
+      });
+    }
+    
+    changePassword(req.params.username, newPassword);
+    res.json({ message: 'Senha alterada com sucesso' });
+  } catch (error) {
+    if (error.message === 'Usuário não encontrado') {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Erro ao alterar senha' });
+    }
+  }
+});
+
+// Rota para ativar/desativar usuário
+app.put('/api/users/:id/toggle-status', (req, res) => {
+  try {
+    const updatedUser = toggleUserStatus(req.params.id);
+    res.json(updatedUser);
+  } catch (error) {
+    if (error.message === 'Usuário não encontrado') {
+      res.status(404).json({ error: error.message });
+    } else if (error.message === 'Não é possível desativar o usuário admin') {
+      res.status(403).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Erro ao alterar status do usuário' });
+    }
+  }
+});
+
+// ========================================
+// ROTAS DE PRODUTOS
+// ========================================
+
 // Rota para documentação Swagger
 app.get('/api-docs', (req, res) => {
   res.json(swaggerDocument);
@@ -459,7 +649,10 @@ app.delete('/api/products/:id', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
   console.log(`📁 Arquivo de produtos: ${productsFilePath}`);
+  console.log(`👥 Arquivo de usuários: ${path.join(__dirname, 'data', 'users.json')}`);
   console.log(`📚 Documentação da API: http://localhost:${PORT}/swagger`);
   console.log(`🔗 Endpoint da API: http://localhost:${PORT}/api-docs`);
   console.log(`🌐 Teste da API: http://localhost:${PORT}/api/products`);
+  console.log(`🔐 Login: POST http://localhost:${PORT}/api/auth/login`);
+  console.log(`👥 Usuários: GET http://localhost:${PORT}/api/users`);
 });

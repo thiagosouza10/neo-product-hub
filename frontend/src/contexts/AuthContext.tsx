@@ -1,12 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { getUsers, UserConfig } from '@/config/users';
-
-export interface User {
-  id: string;
-  name: string;
-  username: string;
-  role: string;
-}
+import { loginUser, User, LoginCredentials } from '@/services/UserService';
 
 interface AuthContextType {
   user: User | null;
@@ -42,25 +35,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
-      // Obter usuários do sistema
-      const users = getUsers();
+      // Fazer login via API
+      const response = await loginUser({ username, password });
       
-      // Buscar usuário válido
-      const foundUser = users.find((u: UserConfig) => 
-        u.username === username && 
-        u.password === password && 
-        u.active === true
-      );
-
-      if (foundUser) {
-        const userSession = {
-          id: foundUser.id,
-          name: foundUser.name,
-          username: foundUser.username,
-          role: foundUser.role
-        };
-        setUser(userSession);
-        localStorage.setItem('currentUser', JSON.stringify(userSession));
+      if (response.success && response.user) {
+        setUser(response.user);
+        localStorage.setItem('currentUser', JSON.stringify(response.user));
         return true;
       }
 

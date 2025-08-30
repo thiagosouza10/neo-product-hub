@@ -15,16 +15,17 @@ import {
 import { toast } from '@/hooks/use-toast';
 import { 
   getUsers, 
-  addUser, 
-  removeUser, 
+  createUser, 
+  updateUser,
+  deleteUser, 
   changePassword, 
-  UserConfig 
-} from '@/config/users';
+  User 
+} from '@/services/UserService';
 
 const UserManagement = () => {
-  const [users, setUsers] = useState<UserConfig[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [isAddingUser, setIsAddingUser] = useState(false);
-  const [editingUser, setEditingUser] = useState<UserConfig | null>(null);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
   const [showPasswords, setShowPasswords] = useState(false);
   
   // Form states
@@ -40,9 +41,13 @@ const UserManagement = () => {
     loadUsers();
   }, []);
 
-  const loadUsers = () => {
-    const allUsers = getUsers();
-    setUsers(allUsers);
+  const loadUsers = async () => {
+    try {
+      const allUsers = await getUsers();
+      setUsers(allUsers);
+    } catch (error) {
+      console.error('Erro ao carregar usuários:', error);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -60,27 +65,43 @@ const UserManagement = () => {
     try {
       if (editingUser) {
         // Atualizar usuário existente
-        const updatedUsers = users.map(u => 
-          u.id === editingUser.id 
-            ? { ...u, ...formData }
-            : u
-        );
-        setUsers(updatedUsers);
-        localStorage.setItem('users', JSON.stringify(updatedUsers));
-        
-        toast({
-          title: "Usuário atualizado!",
-          description: "Usuário foi atualizado com sucesso.",
-        });
+        try {
+          const updatedUser = await updateUser(editingUser.id, formData);
+          const updatedUsers = users.map(u => 
+            u.id === editingUser.id ? updatedUser : u
+          );
+          setUsers(updatedUsers);
+          
+          toast({
+            title: "Usuário atualizado!",
+            description: "Usuário foi atualizado com sucesso.",
+          });
+        } catch (error) {
+          toast({
+            variant: "destructive",
+            title: "Erro",
+            description: "Erro ao atualizar usuário.",
+          });
+          return;
+        }
       } else {
         // Adicionar novo usuário
-        const newUser = addUser(formData);
-        setUsers([...users, newUser]);
-        
-        toast({
-          title: "Usuário criado!",
-          description: "Novo usuário foi adicionado ao sistema.",
-        });
+        try {
+          const newUser = await createUser(formData);
+          setUsers([...users, newUser]);
+          
+          toast({
+            title: "Usuário criado!",
+            description: "Novo usuário foi adicionado ao sistema.",
+          });
+        } catch (error) {
+          toast({
+            variant: "destructive",
+            title: "Erro",
+            description: "Erro ao criar usuário.",
+          });
+          return;
+        }
       }
 
       // Limpar formulário
@@ -115,11 +136,11 @@ const UserManagement = () => {
     setIsAddingUser(true);
   };
 
-  const handleDelete = (userId: string) => {
+  const handleDelete = async (userId: string) => {
     if (window.confirm('Tem certeza que deseja remover este usuário?')) {
       try {
-        removeUser(userId);
-        loadUsers();
+        await deleteUser(userId);
+        await loadUsers();
         
         toast({
           title: "Usuário removido!",
@@ -135,12 +156,12 @@ const UserManagement = () => {
     }
   };
 
-  const handleChangePassword = (username: string) => {
+  const handleChangePassword = async (username: string) => {
     const newPassword = prompt(`Digite a nova senha para ${username}:`);
     if (newPassword && newPassword.length >= 3) {
       try {
-        changePassword(username, newPassword);
-        loadUsers();
+        await changePassword(username, newPassword);
+        await loadUsers();
         
         toast({
           title: "Senha alterada!",

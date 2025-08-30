@@ -1,0 +1,12 @@
+[
+  {
+    "id": "1",
+    "name": "Administrador",
+    "username": "admin",
+    "password": "admin",
+    "role": "admin",
+    "active": true,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "lastLogin": "2025-08-30T16:01:10.350Z"
+  }
+]

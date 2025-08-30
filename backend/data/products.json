@@ -28,15 +28,5 @@
     "active": true,
     "createdAt": "2024-01-15T10:00:00.000Z",
     "updatedAt": "2024-01-15T10:00:00.000Z"
-  },
-  {
-    "name": "Iphone",
-    "description": "1 ano de garantia",
-    "price": 15000,
-    "stock": 5,
-    "active": true,
-    "id": "meyfdm0hipl6c9f4o8k",
-    "createdAt": "2025-08-30T15:37:22.097Z",
-    "updatedAt": "2025-08-30T15:38:26.565Z"
   }
 ]

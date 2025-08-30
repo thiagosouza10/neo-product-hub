@@ -3,10 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { AlertCircle, User, Lock } from 'lucide-react';
+import { AlertCircle, User, Lock, Bug } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
+import { debugAuth, resetAuth, testLogin } from '@/utils/debugAuth';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -20,6 +21,8 @@ const Login = () => {
     setLoading(true);
 
     try {
+      console.log('🔍 Tentando login com:', { username, password });
+      
       const success = await login(username, password);
       if (success) {
         toast({
@@ -28,6 +31,7 @@ const Login = () => {
         });
         navigate('/dashboard');
       } else {
+        console.log('❌ Login falhou - usuário não encontrado');
         toast({
           variant: "destructive",
           title: "Erro no login",
@@ -35,6 +39,7 @@ const Login = () => {
         });
       }
     } catch (error) {
+      console.error('💥 Erro durante login:', error);
       toast({
         variant: "destructive",
         title: "Erro no login",
@@ -105,9 +110,64 @@ const Login = () => {
           </form>
 
           <div className="mt-6 p-4 bg-muted/20 rounded-lg border border-border/50">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
               <AlertCircle className="w-4 h-4" />
               <span>Use credenciais cadastradas no sistema</span>
+            </div>
+            
+            {/* Botões de Debug */}
+            <div className="flex gap-2 text-xs">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  console.log('🔍 === DEBUG INICIADO ===');
+                  debugAuth();
+                  toast({
+                    title: "Debug iniciado",
+                    description: "Verifique o console do navegador (F12)",
+                  });
+                }}
+                className="flex items-center gap-1"
+              >
+                <Bug className="w-3 h-3" />
+                Debug
+              </Button>
+              
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  resetAuth();
+                  toast({
+                    title: "Sistema resetado",
+                    description: "Tente fazer login novamente",
+                  });
+                }}
+                className="flex items-center gap-1"
+              >
+                <Bug className="w-3 h-3" />
+                Reset
+              </Button>
+              
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  testLogin('admin', 'admin123');
+                  toast({
+                    title: "Teste realizado",
+                    description: "Verifique o console para resultados",
+                  });
+                }}
+                className="flex items-center gap-1"
+              >
+                <Bug className="w-3 h-3" />
+                Teste
+              </Button>
             </div>
           </div>
         </Card>
