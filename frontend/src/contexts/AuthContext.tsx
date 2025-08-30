@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { getUsers, UserConfig } from '@/config/users';
 
 export interface User {
   id: string;
   name: string;
   username: string;
+  role: string;
 }
 
 interface AuthContextType {
@@ -40,33 +42,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
-      // Check if users.json exists and has the user
-      const usersData = localStorage.getItem('users');
-      let users = [];
+      // Obter usuários do sistema
+      const users = getUsers();
       
-      if (usersData) {
-        users = JSON.parse(usersData);
-      } else {
-        // Create a default admin user if no users exist
-        const defaultUser = {
-          id: '1',
-          name: 'Administrador',
-          username: 'admin',
-          password: 'admin123'
-        };
-        users = [defaultUser];
-        localStorage.setItem('users', JSON.stringify(users));
-      }
-
-      const foundUser = users.find((u: any) => 
-        u.username === username && u.password === password
+      // Buscar usuário válido
+      const foundUser = users.find((u: UserConfig) => 
+        u.username === username && 
+        u.password === password && 
+        u.active === true
       );
 
       if (foundUser) {
         const userSession = {
           id: foundUser.id,
           name: foundUser.name,
-          username: foundUser.username
+          username: foundUser.username,
+          role: foundUser.role
         };
         setUser(userSession);
         localStorage.setItem('currentUser', JSON.stringify(userSession));

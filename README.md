@@ -1,73 +1,249 @@
-# Welcome to your Lovable project
+# 🚀 Neo Product Hub
 
-## Project info
+Sistema completo de gerenciamento de produtos com **frontend React** e **backend Node.js**, oferecendo uma solução moderna e escalável para controle de estoque.
 
-**URL**: https://lovable.dev/projects/1b188ca6-a609-43dd-b6d1-4ac8e713c123
+## 🏗️ Arquitetura do Sistema
 
-## How can I edit this code?
+O projeto está organizado em **duas camadas principais**:
 
-There are several ways of editing your application.
+```
+neo-product-hub/
+├── 📁 frontend/          # Aplicação React (Interface do usuário)
+├── 📁 backend/           # API Node.js (Servidor e lógica de negócio)
+├── 📁 backend/data/      # Banco de dados JSON
+└── 📄 package.json       # Gerenciamento centralizado
+```
 
-**Use Lovable**
+### **Frontend (React + TypeScript)**
+- **Interface moderna** com Tailwind CSS e Shadcn/ui
+- **Gerenciamento de estado** com React Hooks
+- **Roteamento** com React Router
+- **Formulários** com React Hook Form e validação Zod
+- **Componentes reutilizáveis** e responsivos
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1b188ca6-a609-43dd-b6d1-4ac8e713c123) and start prompting.
+### **Backend (Node.js + Express)**
+- **API REST** completa com documentação Swagger
+- **Persistência de dados** em arquivo JSON
+- **Validação** e tratamento de erros
+- **CORS** configurado para desenvolvimento
+- **Swagger UI** integrado para testes da API
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Como Executar o Sistema
 
-**Use your preferred IDE**
+### **Pré-requisitos**
+- Node.js 18+ instalado
+- npm ou yarn
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### **1. Instalação Completa**
+```bash
+# Na raiz do projeto
+npm run install:all
+```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### **2. Executar Ambos os Serviços Simultaneamente**
+```bash
+# Na raiz do projeto
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### **3. Executar Serviços Separadamente**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+#### **Backend (API)**
+```bash
+# Terminal 1 - Backend
+npm run dev:backend
+# ou
+cd backend && npm run dev
+```
 
-**Use GitHub Codespaces**
+#### **Frontend (Interface)**
+```bash
+# Terminal 2 - Frontend
+npm run dev:frontend
+# ou
+cd frontend && npm run dev
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🌐 URLs de Acesso
 
-## What technologies are used for this project?
+### **Frontend**
+- **Interface do usuário**: http://localhost:8080
+- **Dashboard**: http://localhost:8080/dashboard
 
-This project is built with:
+### **Backend**
+- **API Base**: http://localhost:3001
+- **Swagger UI**: http://localhost:3001/swagger
+- **Documentação JSON**: http://localhost:3001/api-docs
+- **Produtos**: http://localhost:3001/api/products
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 📚 Documentação da API
 
-## How can I deploy this project?
+### **Endpoints Disponíveis**
 
-Simply open [Lovable](https://lovable.dev/projects/1b188ca6-a609-43dd-b6d1-4ac8e713c123) and click on Share -> Publish.
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `GET` | `/api/products` | Listar todos os produtos |
+| `POST` | `/api/products` | Criar novo produto |
+| `GET` | `/api/products/:id` | Buscar produto por ID |
+| `PUT` | `/api/products/:id` | Atualizar produto |
+| `DELETE` | `/api/products/:id` | Deletar produto |
 
-## Can I connect a custom domain to my Lovable project?
+### **Estrutura do Produto**
+```json
+{
+  "id": "string",
+  "name": "string",
+  "description": "string",
+  "price": "number",
+  "stock": "number",
+  "active": "boolean",
+  "createdAt": "string (ISO date)",
+  "updatedAt": "string (ISO date)"
+}
+```
 
-Yes, you can!
+## 🔧 Funcionalidades
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### **✅ Gerenciamento de Produtos**
+- Criar, editar, excluir e listar produtos
+- Controle de estoque
+- Status ativo/inativo
+- Timestamps automáticos
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### **✅ Interface Moderna**
+- Design responsivo com Tailwind CSS
+- Componentes reutilizáveis (Shadcn/ui)
+- Formulários validados
+- Notificações toast
+- Sistema de autenticação
+
+### **✅ API Profissional**
+- Documentação Swagger completa
+- Validação de dados
+- Tratamento de erros
+- CORS configurado
+- Estrutura escalável
+
+### **✅ Persistência de Dados**
+- Arquivo JSON como banco de dados
+- Backup automático a cada operação
+- Dados persistentes entre sessões
+- Fácil migração para banco real
+
+## 🛠️ Desenvolvimento
+
+### **Estrutura de Pastas**
+
+#### **Frontend**
+```
+frontend/
+├── src/
+│   ├── components/     # Componentes React
+│   ├── contexts/       # Contextos (Auth, etc.)
+│   ├── hooks/          # Hooks customizados
+│   ├── lib/            # Utilitários e configurações
+│   ├── pages/          # Páginas da aplicação
+│   └── services/       # Serviços de API
+├── public/             # Arquivos estáticos
+└── package.json        # Dependências do frontend
+```
+
+#### **Backend**
+```
+backend/
+├── server.js           # Servidor Express
+├── data/               # Banco de dados JSON
+│   └── products.json   # Arquivo de produtos
+└── package.json        # Dependências do backend
+```
+
+### **Scripts Disponíveis**
+
+#### **Raiz do Projeto**
+```bash
+npm run install:all     # Instala todas as dependências
+npm run dev             # Executa frontend e backend
+npm run dev:frontend    # Executa apenas o frontend
+npm run dev:backend     # Executa apenas o backend
+npm run build           # Build do frontend
+npm run start           # Inicia o backend
+```
+
+#### **Frontend**
+```bash
+cd frontend
+npm run dev             # Desenvolvimento
+npm run build           # Build de produção
+npm run preview         # Preview do build
+npm run lint            # Linting
+```
+
+#### **Backend**
+```bash
+cd backend
+npm run dev             # Desenvolvimento
+npm start               # Produção
+```
+
+## 🚨 Solução de Problemas
+
+### **Erro "Cannot connect to server"**
+- Verifique se o backend está rodando na porta 3001
+- Confirme que não há outro processo usando a porta
+
+### **Erro "Module not found"**
+- Execute `npm run install:all` na raiz
+- Verifique se as dependências foram instaladas
+
+### **Produtos não aparecem**
+- Verifique o console do navegador
+- Confirme que o backend está respondendo
+- Teste a API em http://localhost:3001/api/products
+
+### **Arquivo não é atualizado**
+- Verifique permissões de escrita na pasta `backend/data/`
+- Confirme que o servidor tem acesso ao arquivo
+
+## 🔄 Próximos Passos
+
+1. **Banco de Dados Real**: Migrar para PostgreSQL/MySQL
+2. **Autenticação JWT**: Sistema de login mais robusto
+3. **Validação Avançada**: Validação mais complexa dos dados
+4. **Logs e Monitoramento**: Sistema de logs para auditoria
+5. **Testes Automatizados**: Unit tests e integration tests
+6. **Docker**: Containerização da aplicação
+7. **CI/CD**: Pipeline de deploy automático
+
+## 📊 Vantagens da Arquitetura
+
+✅ **Separação de responsabilidades**: Frontend e backend independentes
+✅ **Escalabilidade**: Fácil adicionar novos recursos
+✅ **Manutenibilidade**: Código organizado e bem estruturado
+✅ **Desenvolvimento**: Equipes podem trabalhar em paralelo
+✅ **Deploy**: Pode fazer deploy separado de cada camada
+✅ **Testes**: Testar cada camada independentemente
+
+## 🤝 Contribuição
+
+1. Faça fork do projeto
+2. Crie uma branch para sua feature
+3. Commit suas mudanças
+4. Push para a branch
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+
+---
+
+## 🎯 **Resultado Final**
+
+Agora você tem um **sistema profissional** com:
+- **Frontend React** moderno e responsivo
+- **Backend Node.js** com API REST completa
+- **Documentação Swagger** integrada
+- **Persistência de dados** em arquivo JSON
+- **Arquitetura escalável** e bem organizada
+
+**Para começar**: Execute `npm run install:all` e depois `npm run dev`! 🚀
