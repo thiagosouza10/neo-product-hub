@@ -11,7 +11,9 @@ import {
   Package, 
   LogOut,
   DollarSign,
-  Hash
+  Hash,
+  Download,
+  Upload
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -107,6 +109,62 @@ const Dashboard = () => {
     }
   };
 
+  const handleExportJSON = async () => {
+    try {
+      const jsonData = await ProductService.exportToJSON();
+      const blob = new Blob([jsonData], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'produtos.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Exportado com sucesso!",
+        description: "Arquivo JSON baixado com sucesso.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Erro ao exportar produtos.",
+      });
+    }
+  };
+
+  const handleImportJSON = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const jsonData = e.target?.result as string;
+        const importedProducts = await ProductService.importFromJSON(jsonData);
+        
+        toast({
+          title: "Importado com sucesso!",
+          description: `${importedProducts.length} produtos foram importados.`,
+        });
+        
+        loadProducts();
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Erro",
+          description: "Erro ao importar arquivo JSON.",
+        });
+      }
+    };
+    reader.readAsText(file);
+    
+    // Limpar o input para permitir importar o mesmo arquivo novamente
+    event.target.value = '';
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-dark">
@@ -155,17 +213,45 @@ const Dashboard = () => {
             className="pl-10 glass-card border-border"
           />
         </div>
-        <Button
-          onClick={() => {
-            setEditingProduct(null);
-            setIsModalOpen(true);
-          }}
-          variant="hero"
-          className="glow-effect"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Novo Produto
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={handleExportJSON}
+            variant="outline"
+            className="glass-card border-border"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Exportar JSON
+          </Button>
+          <label className="cursor-pointer">
+            <input
+              type="file"
+              accept=".json"
+              onChange={handleImportJSON}
+              className="hidden"
+            />
+            <Button
+              variant="outline"
+              className="glass-card border-border"
+              asChild
+            >
+              <span>
+                <Upload className="w-4 h-4 mr-2" />
+                Importar JSON
+              </span>
+            </Button>
+          </label>
+          <Button
+            onClick={() => {
+              setEditingProduct(null);
+              setIsModalOpen(true);
+            }}
+            variant="hero"
+            className="glow-effect"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Novo Produto
+          </Button>
+        </div>
       </div>
 
       {/* Products Grid */}

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "name": "Smartphone Galaxy S23",
+    "description": "Smartphone Samsung Galaxy S23 com 128GB, tela de 6.1 polegadas e câmera de 50MP",
+    "price": 3999.99,
+    "stock": 15,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "2",
+    "name": "Notebook Dell Inspiron",
+    "description": "Notebook Dell Inspiron 15 com Intel i5, 8GB RAM, 256GB SSD e Windows 11",
+    "price": 2899.99,
+    "stock": 8,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "3",
+    "name": "Fone de Ouvido Bluetooth",
+    "description": "Fone de ouvido sem fio com cancelamento de ruído ativo e bateria de longa duração",
+    "price": 299.99,
+    "stock": 25,
+    "active": true,
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z"
+  }
+]

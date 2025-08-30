@@ -10,12 +10,26 @@ export interface Product {
 }
 
 export class ProductService {
-  private static STORAGE_KEY = 'products';
+  private static API_BASE_URL = 'http://localhost:3001/api';
+
+  // Método para carregar produtos iniciais se não existirem
+  private static async loadInitialProducts(): Promise<Product[]> {
+    try {
+      const response = await fetch(`${this.API_BASE_URL}/products`);
+      if (response.ok) {
+        const products = await response.json();
+        return products;
+      }
+      return [];
+    } catch (error) {
+      console.error('Error loading products from API:', error);
+      return [];
+    }
+  }
 
   static async getProducts(): Promise<Product[]> {
     try {
-      const data = localStorage.getItem(this.STORAGE_KEY);
-      return data ? JSON.parse(data) : [];
+      return await this.loadInitialProducts();
     } catch (error) {
       console.error('Error loading products:', error);
       return [];
@@ -24,17 +38,19 @@ export class ProductService {
 
   static async createProduct(productData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<Product> {
     try {
-      const products = await this.getProducts();
-      const newProduct: Product = {
-        ...productData,
-        id: this.generateId(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
+      const response = await fetch(`${this.API_BASE_URL}/products`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productData),
+      });
 
-      products.push(newProduct);
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(products));
-      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const newProduct = await response.json();
       return newProduct;
     } catch (error) {
       console.error('Error creating product:', error);
@@ -44,22 +60,19 @@ export class ProductService {
 
   static async updateProduct(id: string, productData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<Product> {
     try {
-      const products = await this.getProducts();
-      const index = products.findIndex(p => p.id === id);
-      
-      if (index === -1) {
-        throw new Error('Product not found');
+      const response = await fetch(`${this.API_BASE_URL}/products/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const updatedProduct: Product = {
-        ...products[index],
-        ...productData,
-        updatedAt: new Date().toISOString(),
-      };
-
-      products[index] = updatedProduct;
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(products));
-      
+      const updatedProduct = await response.json();
       return updatedProduct;
     } catch (error) {
       console.error('Error updating product:', error);
@@ -69,9 +82,13 @@ export class ProductService {
 
   static async deleteProduct(id: string): Promise<void> {
     try {
-      const products = await this.getProducts();
-      const filteredProducts = products.filter(p => p.id !== id);
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(filteredProducts));
+      const response = await fetch(`${this.API_BASE_URL}/products/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
     } catch (error) {
       console.error('Error deleting product:', error);
       throw error;
@@ -80,15 +97,58 @@ export class ProductService {
 
   static async getProductById(id: string): Promise<Product | null> {
     try {
-      const products = await this.getProducts();
-      return products.find(p => p.id === id) || null;
+      const response = await fetch(`${this.API_BASE_URL}/products/${id}`);
+      
+      if (response.ok) {
+        const product = await response.json();
+        return product;
+      }
+      
+      if (response.status === 404) {
+        return null;
+      }
+      
+      throw new Error(`HTTP error! status: ${response.status}`);
     } catch (error) {
       console.error('Error getting product by id:', error);
       return null;
     }
   }
 
-  private static generateId(): string {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  // Método para exportar dados para arquivo JSON (para download)
+  static async exportToJSON(): Promise<string> {
+    try {
+      const products = await this.getProducts();
+      return JSON.stringify(products, null, 2);
+    } catch (error) {
+      console.error('Error exporting products:', error);
+      throw error;
+    }
+  }
+
+  // Método para importar dados de arquivo JSON
+  static async importFromJSON(jsonData: string): Promise<Product[]> {
+    try {
+      const products = JSON.parse(jsonData);
+      if (!Array.isArray(products)) {
+        throw new Error('Invalid JSON format');
+      }
+
+      // Limpar produtos existentes e importar novos
+      for (const product of products) {
+        await this.createProduct({
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          stock: product.stock,
+          active: product.active,
+        });
+      }
+
+      return await this.getProducts();
+    } catch (error) {
+      console.error('Error importing JSON:', error);
+      throw error;
+    }
   }
 }
