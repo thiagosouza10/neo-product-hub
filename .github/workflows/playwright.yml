@@ -1,0 +1,68 @@
+name: Playwright Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Instalando Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Checkout repositório da aplicação
+        uses: actions/checkout@v4
+        with:
+          repository: thiagosouza10/neo-product-hub
+          path: app
+
+      - name: Instalando dependências da aplicação
+        run: npm run install:all
+        working-directory: ./app
+
+      - name: Start da aplicação
+        run: |
+          Start-Process -FilePath "npm" -ArgumentList "run dev"
+          sleep 10
+        working-directory: ./app
+   
+      - name: Checkout código
+        uses: actions/checkout@v4
+        with:
+          path: tests
+
+      - name: Instalando dependências
+        run: npm install
+        working-directory: ./tests
+
+      - name: Instalando browsers do Playwright
+        run: npx playwright install chromium --with-deps
+        working-directory: ./tests
+
+      - name: Executando Testes
+        run: npx playwright test
+        working-directory: ./tests
+
+      - name: Publicando allure-report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: ./tests/allure-results
+
+      - name: Gerando Allure Report
+        run: |
+          npm install --save-dev allure-commandline
+          npx allure generate ./tests/allure-results -o ./tests/allure-report --clean
+        working-directory: ./tests
+
+      - name: Publicar Allure Report no GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3.9.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./tests/allure-report
+
+        
