@@ -7,224 +7,209 @@ const __dirname = path.dirname(__filename);
 
 const usersFilePath = path.join(__dirname, '../data/users.json');
 
-// Função para ler usuários do arquivo
+const sanitizeUserForResponse = user => {
+  const { password, ...userWithoutPassword } = user;
+  return userWithoutPassword;
+};
+
+const isProtectedAdminUser = user => user?.username === 'admin';
+
 export const readUsersFromFile = () => {
   try {
     if (!fs.existsSync(usersFilePath)) {
-      // Se o arquivo não existe, cria com usuários padrão
       const defaultUsers = [
         {
-          id: "1",
-          name: "Administrador",
-          username: "admin",
-          password: "admin123",
-          role: "admin",
+          id: '1',
+          name: 'Administrador',
+          username: 'admin',
+          password: 'admin',
+          role: 'admin',
           active: true,
           createdAt: new Date().toISOString(),
-          lastLogin: null
+          lastLogin: null,
         },
         {
-          id: "2",
-          name: "João Silva",
-          username: "joao",
-          password: "senha123",
-          role: "manager",
+          id: '2',
+          name: 'Joao Silva',
+          username: 'joao',
+          password: 'senha123',
+          role: 'manager',
           active: true,
           createdAt: new Date().toISOString(),
-          lastLogin: null
+          lastLogin: null,
         },
         {
-          id: "3",
-          name: "Maria Santos",
-          username: "maria",
-          password: "senha456",
-          role: "user",
+          id: '3',
+          name: 'Maria Santos',
+          username: 'maria',
+          password: 'senha456',
+          role: 'user',
           active: true,
           createdAt: new Date().toISOString(),
-          lastLogin: null
-        }
+          lastLogin: null,
+        },
       ];
-      
+
       fs.writeFileSync(usersFilePath, JSON.stringify(defaultUsers, null, 2));
       return defaultUsers;
     }
-    
+
     const data = fs.readFileSync(usersFilePath, 'utf8');
     return JSON.parse(data);
   } catch (error) {
-    console.error('Erro ao ler arquivo de usuários:', error);
+    console.error('Erro ao ler arquivo de usuarios:', error);
     return [];
   }
 };
 
-// Função para escrever usuários no arquivo
-export const writeUsersToFile = (users) => {
+export const writeUsersToFile = users => {
   try {
     fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
     return true;
   } catch (error) {
-    console.error('Erro ao escrever arquivo de usuários:', error);
+    console.error('Erro ao escrever arquivo de usuarios:', error);
     return false;
   }
 };
 
-// Função para obter todos os usuários
-export const getAllUsers = () => {
-  return readUsersFromFile();
-};
+export const getAllUsers = () => readUsersFromFile();
 
-// Função para obter usuário por ID
-export const getUserById = (id) => {
+export const getUserById = id => {
   const users = readUsersFromFile();
   return users.find(user => user.id === id);
 };
 
-// Função para obter usuário por username
-export const getUserByUsername = (username) => {
+export const getUserByUsername = username => {
   const users = readUsersFromFile();
   return users.find(user => user.username === username);
 };
 
-// Função para autenticar usuário
 export const authenticateUser = (username, password) => {
   const users = readUsersFromFile();
-  const user = users.find(u => 
-    u.username === username && 
-    u.password === password && 
-    u.active === true
+  const user = users.find(
+    item =>
+      item.username === username &&
+      item.password === password &&
+      item.active === true
   );
-  
-  if (user) {
-    // Atualizar último login
-    user.lastLogin = new Date().toISOString();
-    writeUsersToFile(users);
-    
-    // Retornar usuário sem senha
-    const { password: _, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+
+  if (!user) {
+    return null;
   }
-  
-  return null;
+
+  user.lastLogin = new Date().toISOString();
+  writeUsersToFile(users);
+
+  return sanitizeUserForResponse(user);
 };
 
-// Função para criar novo usuário
-export const createUser = (userData) => {
+export const createUser = userData => {
   const users = readUsersFromFile();
-  
-  // Verificar se username já existe
-  if (users.find(u => u.username === userData.username)) {
-    throw new Error('Username já existe');
+
+  if (users.find(user => user.username === userData.username)) {
+    throw new Error('USERNAME_ALREADY_EXISTS');
   }
-  
+
   const newUser = {
     id: Date.now().toString(),
     ...userData,
     createdAt: new Date().toISOString(),
-    lastLogin: null
+    lastLogin: null,
   };
-  
+
   users.push(newUser);
-  
+
   if (writeUsersToFile(users)) {
-    const { password: _, ...userWithoutPassword } = newUser;
-    return userWithoutPassword;
+    return sanitizeUserForResponse(newUser);
   }
-  
-  throw new Error('Erro ao salvar usuário');
+
+  throw new Error('USER_SAVE_FAILED');
 };
 
-// Função para atualizar usuário
 export const updateUser = (id, userData) => {
   const users = readUsersFromFile();
-  const userIndex = users.findIndex(u => u.id === id);
-  
+  const userIndex = users.findIndex(user => user.id === id);
+
   if (userIndex === -1) {
-    throw new Error('Usuário não encontrado');
+    throw new Error('USER_NOT_FOUND');
   }
-  
-  // Verificar se username já existe (exceto para o usuário atual)
-  const usernameExists = users.find(u => 
-    u.username === userData.username && u.id !== id
+
+  const usernameExists = users.find(
+    user => user.username === userData.username && user.id !== id
   );
-  
+
   if (usernameExists) {
-    throw new Error('Username já existe');
+    throw new Error('USERNAME_ALREADY_EXISTS');
   }
-  
+
   users[userIndex] = {
     ...users[userIndex],
     ...userData,
-    id // Manter ID original
+    id,
   };
-  
+
   if (writeUsersToFile(users)) {
-    const { password: _, ...userWithoutPassword } = users[userIndex];
-    return userWithoutPassword;
+    return sanitizeUserForResponse(users[userIndex]);
   }
-  
-  throw new Error('Erro ao atualizar usuário');
+
+  throw new Error('USER_UPDATE_FAILED');
 };
 
-// Função para deletar usuário
-export const deleteUser = (id) => {
+export const deleteUser = id => {
   const users = readUsersFromFile();
-  const userIndex = users.findIndex(u => u.id === id);
-  
+  const userIndex = users.findIndex(user => user.id === id);
+
   if (userIndex === -1) {
-    throw new Error('Usuário não encontrado');
+    throw new Error('USER_NOT_FOUND');
   }
-  
-  // Não permitir deletar usuário admin
-  if (users[userIndex].username === 'admin') {
-    throw new Error('Não é possível deletar o usuário admin');
+
+  if (isProtectedAdminUser(users[userIndex])) {
+    throw new Error('PROTECTED_ADMIN_DELETE');
   }
-  
+
   users.splice(userIndex, 1);
-  
+
   if (writeUsersToFile(users)) {
     return true;
   }
-  
-  throw new Error('Erro ao deletar usuário');
+
+  throw new Error('USER_DELETE_FAILED');
 };
 
-// Função para alterar senha
 export const changePassword = (username, newPassword) => {
   const users = readUsersFromFile();
-  const userIndex = users.findIndex(u => u.username === username);
-  
+  const userIndex = users.findIndex(user => user.username === username);
+
   if (userIndex === -1) {
-    throw new Error('Usuário não encontrado');
+    throw new Error('USER_NOT_FOUND');
   }
-  
+
   users[userIndex].password = newPassword;
-  
+
   if (writeUsersToFile(users)) {
     return true;
   }
-  
-  throw new Error('Erro ao alterar senha');
+
+  throw new Error('PASSWORD_CHANGE_FAILED');
 };
 
-// Função para ativar/desativar usuário
-export const toggleUserStatus = (id) => {
+export const toggleUserStatus = id => {
   const users = readUsersFromFile();
-  const userIndex = users.findIndex(u => u.id === id);
-  
+  const userIndex = users.findIndex(user => user.id === id);
+
   if (userIndex === -1) {
-    throw new Error('Usuário não encontrado');
+    throw new Error('USER_NOT_FOUND');
   }
-  
-  // Não permitir desativar usuário admin
-  if (users[userIndex].username === 'admin') {
-    throw new Error('Não é possível desativar o usuário admin');
+
+  if (isProtectedAdminUser(users[userIndex])) {
+    throw new Error('PROTECTED_ADMIN_TOGGLE');
   }
-  
+
   users[userIndex].active = !users[userIndex].active;
-  
+
   if (writeUsersToFile(users)) {
-    return users[userIndex];
+    return sanitizeUserForResponse(users[userIndex]);
   }
-  
-  throw new Error('Erro ao alterar status do usuário');
+
+  throw new Error('USER_STATUS_UPDATE_FAILED');
 };

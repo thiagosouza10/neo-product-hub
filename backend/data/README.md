@@ -1,46 +1,50 @@
 # Sistema de Dados - Produtos
 
-Este diretório contém os dados dos produtos em formato JSON.
+Este diretorio contem os dados persistidos dos produtos em formato JSON.
 
 ## Arquivo: `products.json`
 
-O arquivo `products.json` armazena todos os produtos cadastrados no sistema. Cada produto possui a seguinte estrutura:
+Cada produto salvo pelo backend segue esta estrutura:
 
 ```json
 {
   "id": "string",
   "name": "string",
-  "description": "string", 
-  "price": "number",
-  "stock": "number",
-  "active": "boolean",
-  "createdAt": "string (ISO date)",
-  "updatedAt": "string (ISO date)"
+  "description": "string",
+  "price": 3999.99,
+  "stock": 15,
+  "active": true,
+  "createdAt": "2026-04-17T18:48:37.815Z",
+  "updatedAt": "2026-04-17T18:48:37.815Z"
 }
 ```
 
-## Como Funciona
+## Regras aplicadas pelo backend
 
-1. **Carregamento**: Quando a aplicação inicia, ela automaticamente carrega os produtos deste arquivo
-2. **Persistência**: Todas as operações (criar, editar, excluir) são salvas automaticamente neste arquivo
-3. **Versionamento**: Este arquivo é versionado no Git, permitindo rastrear mudanças nos produtos
-4. **Backup**: Os dados são persistidos localmente e não são perdidos ao reiniciar a aplicação
+- `name`: obrigatorio no `POST`, entre `3` e `120` caracteres
+- `description`: obrigatorio no `POST`, entre `10` e `500` caracteres
+- `price`: obrigatorio no `POST`, entre `0.01` e `999999.99`, com no maximo `2` casas decimais
+- `stock`: obrigatorio no `POST`, inteiro entre `0` e `999999`
+- `active`: obrigatorio no `POST`, booleano
+- `id`, `createdAt` e `updatedAt`: gerados automaticamente pelo backend
 
-## Operações Suportadas
+## Como funciona
 
-- ✅ **Criar produto**: Adiciona novo produto ao arquivo
-- ✅ **Editar produto**: Atualiza produto existente no arquivo  
-- ✅ **Excluir produto**: Remove produto do arquivo
-- ✅ **Listar produtos**: Carrega todos os produtos do arquivo
-- ✅ **Buscar produto**: Encontra produto específico por ID
+1. Quando a aplicacao inicia, ela le os produtos deste arquivo.
+2. Toda criacao, edicao ou exclusao sobrescreve o arquivo inteiro.
+3. O backend valida o payload antes de persistir novos dados.
+4. Campos extras enviados pelo cliente sao rejeitados.
 
-## Localização
+## Operacoes suportadas
 
-O arquivo está localizado em: `./data/products.json`
+- Criar produto
+- Editar produto
+- Excluir produto
+- Listar produtos
+- Buscar produto por ID
 
 ## Importante
 
-- Não edite este arquivo manualmente enquanto a aplicação estiver rodando
-- A aplicação gerencia automaticamente a criação e manutenção deste arquivo
-- Em caso de corrupção, a aplicação recriará o arquivo automaticamente
-
+- Nao edite este arquivo manualmente enquanto a aplicacao estiver rodando.
+- O arquivo deve manter a estrutura esperada pelo backend.
+- A documentacao oficial das regras da API esta em `backend/README.md`.

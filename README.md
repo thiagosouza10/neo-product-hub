@@ -85,6 +85,7 @@ npm run build
 
 ### **Produtos**
 - `GET /api/products` - Listar produtos
+- `GET /api/products/:id` - Buscar produto por ID
 - `POST /api/products` - Criar produto
 - `PUT /api/products/:id` - Atualizar produto
 - `DELETE /api/products/:id` - Deletar produto
@@ -92,8 +93,11 @@ npm run build
 ### **Usuários**
 - `POST /api/auth/login` - Fazer login
 - `GET /api/users` - Listar usuários
+- `GET /api/users/:id` - Buscar usuário por ID
 - `POST /api/users` - Criar usuário
 - `PUT /api/users/:id` - Atualizar usuário
+- `PUT /api/users/:username/password` - Alterar senha
+- `PUT /api/users/:id/toggle-status` - Ativar/desativar usuário
 - `DELETE /api/users/:id` - Deletar usuário
 
 ### **Documentação**
@@ -168,6 +172,7 @@ CORS_ORIGIN=http://localhost:8080
 
 ## 📚 **Documentação Adicional**
 
+- **`backend/README.md`** - Documentacao completa do backend com regras de negocio, payloads, status codes e exemplos de response
 - **`SISTEMA_USUARIOS_JSON.md`** - Detalhes do sistema de usuários
 - **`GESTAO_USUARIOS.md`** - Guia de gestão de usuários
 - **`SOLUCAO_LOGIN.md`** - Soluções para problemas de login
